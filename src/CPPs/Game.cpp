@@ -1,5 +1,5 @@
 // Game.cpp
-#include "Game.h"
+#include "Headers/Game.h"
 #include <iostream>
 
 Game::Game() : board(), player1(1), player2(2), dice(), turn(0), isGameOver(false) {}

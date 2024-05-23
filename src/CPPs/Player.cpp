@@ -1,5 +1,5 @@
 // Player.cpp
-#include "Player.h"
+#include "Headers/Player.h"
 
 Player::Player(int number) : position(1), playerNumber(number) {}
 
