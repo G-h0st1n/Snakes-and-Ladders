@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Dice.h"
+#include "Headers/Dice.h"
 
 using namespace std;
 
