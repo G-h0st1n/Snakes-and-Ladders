@@ -14,7 +14,7 @@ int main() {
             game.endGame();
             break;
         } else {
-            std::cout << "Invalid option, please press C to continue next turn or E to end the game\n";
+            std::cout << "Invalid option, please press C to continue next turn or E to end the game\n test change push";
         }
     }
 
