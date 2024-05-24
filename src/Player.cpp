@@ -1,10 +1,13 @@
 // Player.cpp
-#include "Headers/Player.h"
+#include "Player.h"
 
 Player::Player(int number) : position(1), playerNumber(number) {}
 
 void Player::move(int steps) {
-    position += steps;
+    position = position + steps;
+    if (position >= 30) {
+        position = 30;
+    };
 }
 
 int Player::getPosition() const {

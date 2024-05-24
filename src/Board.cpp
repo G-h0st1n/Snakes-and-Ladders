@@ -1,5 +1,5 @@
 // Board.cpp
-#include "Headers/Board.h"
+#include "Board.h"
 
 Board::Board() : tiles(30, 'N') {
     // Initialize snakes and ladders
