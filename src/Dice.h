@@ -1,22 +1,18 @@
+#ifndef DICE_H
+#define DICE_H
+
 #include <cstdlib>
-#include <ctime>
 
-using namespace std;
-
-class Dice{
+class Dice {
 private:
-   int sides;
+    int sides;
+
 public:
-   int result;
+    Dice() : sides(6) {} // Initialize with 6 sides for a standard die
 
-   Dice(void){
-     result = 0;
-     sides = 12;
-   }
-
-   int roll(){
-    srand((unsigned int) time(NULL));
-    Dice::result = rand() % sides +1;
-    return Dice::result;
-   }
+    int roll() {
+        return rand() % sides + 1; // Return a random number between 1 and 6
+    }
 };
+
+#endif // DICE_H

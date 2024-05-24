@@ -13,13 +13,15 @@ private:
     Player player2;
     Dice dice;
     int turn;
-    bool isGameOver;
+    bool gameOver;
+
 public:
     Game();
+    bool isGameOver() const;
     void start();
     void takeTurn();
     void endGame();
-    void endTurn();
+    void processPlayerTurn(Player& player, int dieResult);
 };
 
 #endif // GAME_H

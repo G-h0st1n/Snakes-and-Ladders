@@ -2,54 +2,48 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() : board(), player1(1), player2(2), dice(), turn(1), isGameOver(false) {}
+Game::Game() : board(), player1(1), player2(2), dice(), turn(1), gameOver(false) {}
+
+bool Game::isGameOver() const {
+    return gameOver;
+}
 
 void Game::start() {
-    // Print instruction menu
     std::cout << "Press C to continue next turn, or E to end the game:\n";
 }
 
 void Game::takeTurn() {
-    // Implementation of turn execution
-    //cout<<"Result: "<<mydice->roll()<<"\n";
-    Dice * mydice = new Dice(); //Alternative declaration
-    mydice->roll();
-    int result = mydice->result;
-
-    //player 1
-    cout << turn << " " << player1.getPlayerNumber() << " " << player1.getPosition() << " " << result << " ";
-    player1.move(result);
-    cout << board.getTileType(player1.getPosition()) << " ";
-    if (board.getTileType(player1.getPosition()) == 'L'){
-        player1.move(4);
-        cout << player1.getPosition(); 
-    } else if(board.getTileType(player1.getPosition()) == 'S'){
-        player1.move(-7);
-        cout << player1.getPosition();
-    }else {
-        cout << player1.getPosition();
+    if (!gameOver) {
+        processPlayerTurn(player1, dice.roll());
+        if (!gameOver) {
+            processPlayerTurn(player2, dice.roll());
+        }
+        turn++;
     }
-    cout << endl;
-
-    //player 2
-    cout << turn << " " << player2.getPlayerNumber() << " " << player2.getPosition() << " " << result << " ";
-    player2.move(result);
-    cout << board.getTileType(player2.getPosition()) << " ";
-    if (board.getTileType(player2.getPosition()) == 'L'){
-        player2.move(4);
-        cout << player2.getPosition(); 
-    } else if(board.getTileType(player2.getPosition()) == 'S'){
-        player2.move(-7);
-        cout << player2.getPosition();
-    }else {
-        cout << player2.getPosition();
-    }
-    cout << endl;
 }
 
-void Game::endTurn(){
-    turn = turn + 1;
+void Game::processPlayerTurn(Player& player, int dieResult) {
+    std::cout << turn << " " << player.getPlayerNumber() << " " << player.getPosition() << " " << dieResult << " ";
+    player.move(dieResult);
+    char tileType = board.getTileType(player.getPosition());
+    std::cout << tileType << " ";
+    if (tileType == 'L') {
+        player.move(3); // Move up the ladder
+    } else if (tileType == 'S') {
+        player.move(-3); // Move down the snake
+    }
+    std::cout << player.getPosition() << std::endl;
+
+    // Check for game end condition
+    if (player.getPosition() == 30) {
+        gameOver = true;
+        std::cout << "-- GAME OVER --\n";
+        std::cout << "Player " << player.getPlayerNumber() << " is the winner!!!\n";
+    }
 }
+
 void Game::endGame() {
+    gameOver = true;
     std::cout << "-- GAME OVER --\n";
+    std::cout << "Thanks for playing!!!\n";
 }
