@@ -19,6 +19,7 @@ public:
     void start();
     void takeTurn();
     void endGame();
+    void endTurn();
 };
 
 #endif // GAME_H

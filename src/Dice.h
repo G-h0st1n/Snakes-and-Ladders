@@ -16,6 +16,7 @@ public:
 
    int roll(){
     srand((unsigned int) time(NULL));
-    return (rand() % sides) + 1;
+    Dice::result = rand() % sides +1;
+    return Dice::result;
    }
 };
