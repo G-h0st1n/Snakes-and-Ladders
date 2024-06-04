@@ -1,41 +1,41 @@
 #include "MyGame.h"
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 
-MyGame::MyGame() {
-    playerPositions[0] = 0;
-    playerPositions[1] = 0;
-    turnNumber = 1;
-    
-    // Initialize the board
-    for (int i = 0; i < 30; ++i) {
-        board[i] = 'N';
+MyGame::MyGame(int tiles, int snakes, int ladders, int penalty, int reward, int players, int turns) 
+    : turnNumber(1), maxTurns(turns), playerCount(players) {
+    playerPositions.resize(players, 0);
+
+    // Initialize the board with normal tiles
+    for (int i = 0; i < tiles; ++i) {
+        board.push_back(new NormalTile());
     }
-    
-    // Place snakes and ladders
-    board[5] = 'S'; board[10] = 'S'; board[15] = 'S';
-    board[3] = 'L'; board[12] = 'L'; board[21] = 'L';
+
+    // Place snakes on the board
+    std::srand(std::time(0));
+    for (int i = 0; i < snakes; ++i) {
+        int pos = std::rand() % (tiles - 1) + 1; // Ensure it's not the first tile
+        delete board[pos];
+        board[pos] = new SnakeTile(penalty);
+    }
+
+    // Place ladders on the board
+    for (int i = 0; i < ladders; ++i) {
+        int pos = std::rand() % (tiles - 1) + 1; // Ensure it's not the first tile
+        delete board[pos];
+        board[pos] = new LadderTile(reward);
+    }
 }
 
-void MyGame::start() {
-    printInstructionMenu();
-    
-    while (true) {
-        char command;
-        std::cin >> command;
-
-        if (command == 'e') {
-            std::cout << "Thanks for playing!!!\n";
-            break;
-        } else if (command == 'c') {
-            executeTurn((turnNumber - 1) % 2);
-            if (checkGameOver((turnNumber - 1) % 2)) break;
-            ++turnNumber;
-        } else {
-            std::cout << "Invalid option, please press C to continue next turn or E to end the game\n";
-        }
+MyGame::~MyGame() {
+    for (auto tile : board) {
+        delete tile;
     }
+}
 
-    std::cout << "-- GAME OVER --\n";
+void MyGame::start(GameType* gameType) {
+    gameType->play(*this);
 }
 
 void MyGame::printInstructionMenu() {
@@ -47,28 +47,23 @@ void MyGame::executeTurn(int player) {
     int diceRoll = dice.roll();
     int newPos = currentPos + diceRoll;
 
-    if (newPos >= 30) {
-        playerPositions[player] = 29;
-        std::cout << turnNumber << " " << (player + 1) << " " << (currentPos + 1) << " " << diceRoll << " N " << 30 << "\n";
+    if (newPos >= board.size()) {
+        playerPositions[player] = board.size() - 1;
+        std::cout << turnNumber << " " << (player + 1) << " " << (currentPos + 1) << " " << diceRoll << " N " << board.size() << "\n";
         std::cout << "Player " << (player + 1) << " is the winner!!!\n";
         return;
     }
 
-    char newPosType = board[newPos];
-    int finalPos = newPos;
-    
-    if (newPosType == 'S') {
-        finalPos = newPos - 3;
-    } else if (newPosType == 'L') {
-        finalPos = newPos + 3;
-    }
+    char newPosType = board[newPos]->getType();
+    int finalPos = board[newPos]->getNextPosition(newPos);
+    if (finalPos < 0) finalPos = 0;
 
     playerPositions[player] = finalPos;
     std::cout << turnNumber << " " << (player + 1) << " " << (currentPos + 1) << " " << diceRoll << " " << newPosType << " " << (finalPos + 1) << "\n";
 }
 
 bool MyGame::checkGameOver(int player) {
-    if (playerPositions[player] >= 29) {
+    if (playerPositions[player] >= board.size() - 1) {
         std::cout << "Player " << (player + 1) << " is the winner!!!\n";
         return true;
     }
